@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#f6d985" />
+  <title>蛙之诗</title>
+  <link rel="icon" href="assets/ui/favicon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main id="app" aria-live="polite">
+    <canvas id="sakura" aria-hidden="true"></canvas>
+
+    <section id="title-screen" class="screen active" aria-label="标题界面">
+      <div class="title-bg"></div>
+      <div class="title-vignette"></div>
+      <nav class="title-menu" aria-label="主菜单">
+        <button class="menu-btn primary-extra" data-action="gallery"><span>回想模式</span><small>EXTRA</small></button>
+        <button class="menu-btn" data-action="start"><span>开始游戏</span><small>START</small></button>
+        <button class="menu-btn" id="continue-btn" data-action="continue"><span>继续游戏</span><small>CONTINUE</small></button>
+        <button class="menu-btn" data-action="load"><span>读取存档</span><small>LOAD</small></button>
+        <button class="menu-btn" data-action="settings"><span>系统设置</span><small>CONFIG</small></button>
+        <button class="menu-btn" data-action="quit"><span>结束游戏</span><small>EXIT</small></button>
+      </nav>
+      <div class="sound-hint" id="sound-hint">♪ 点击任意菜单启用声音</div>
+      <div class="title-version"><span>企划・制作 · 我</span><span>WA NO UTA · Web Edition 1.3</span></div>
+    </section>
+
+    <section id="gallery-screen" class="screen paper-screen" aria-label="回想模式">
+      <header class="sub-header">
+        <div>
+          <div class="eyebrow">EXTRA MODE</div>
+          <h1>回想模式</h1>
+        </div>
+        <button class="ghost-btn" data-back-title>返回标题</button>
+      </header>
+      <div class="gallery-tabs" role="tablist">
+        <button class="tab active" data-gallery-tab="cg">CG鉴赏 <b id="cg-count">6 / 48</b></button>
+        <button class="tab" data-gallery-tab="scene">回想场景 <b>0 / 24</b></button>
+        <button class="tab" data-gallery-tab="character">角色立绘 <b>6 / 6</b></button>
+        <button class="tab" data-gallery-tab="special">SPECIAL <b id="special-count">0 / 8</b></button>
+      </div>
+      <div id="gallery-grid" class="gallery-grid"></div>
+      <footer class="sub-footer">已解锁内容可点击查看。锁定内容会随着故事推进开放。</footer>
+    </section>
+
+    <section id="settings-screen" class="screen paper-screen" aria-label="系统设置">
+      <header class="sub-header">
+        <div>
+          <div class="eyebrow">CONFIGURATION</div>
+          <h1>系统设置</h1>
+        </div>
+        <button class="ghost-btn" data-back-context>返回</button>
+      </header>
+      <div class="settings-panel">
+        <div class="settings-group">
+          <h2>声音</h2>
+          <label class="slider-row">BGM音量 <input id="bgm-volume" type="range" min="0" max="1" step="0.01"><output id="bgm-volume-out"></output></label>
+          <label class="slider-row">SE音量 <input id="se-volume" type="range" min="0" max="1" step="0.01"><output id="se-volume-out"></output></label>
+          <label class="slider-row">语音音量 <input id="voice-volume" type="range" min="0" max="1" step="0.01"><output id="voice-volume-out"></output></label>
+        </div>
+        <div class="settings-group">
+          <h2>文本</h2>
+          <label class="slider-row">文字速度 <input id="text-speed" type="range" min="12" max="70" step="1"><output id="text-speed-out"></output></label>
+          <label class="slider-row">自动播放速度 <input id="auto-speed" type="range" min="1200" max="6500" step="100"><output id="auto-speed-out"></output></label>
+          <label class="toggle-row"><span>允许跳过未读文本</span><input id="skip-unread" type="checkbox"><i></i></label>
+          <label class="toggle-row"><span>右键隐藏文字框</span><input id="right-hide" type="checkbox"><i></i></label>
+        </div>
+        <div class="settings-group">
+          <h2>画面</h2>
+          <button id="fullscreen-btn" class="wide-btn">切换全屏</button>
+          <button id="reset-settings" class="wide-btn subtle">恢复默认设置</button>
+        </div>
+      </div>
+      <div class="settings-note">设置会自动保存在当前浏览器中。</div>
+    </section>
+
+    <section id="game-screen" class="screen" aria-label="游戏画面">
+      <div id="game-background" class="game-background"></div>
+      <div class="game-shade"></div>
+      <div id="frog-layer" class="frog-layer hidden" aria-label="她的笑容">
+        <div class="frog-stage">
+          <img id="frog-sprite" src="assets/character/naiwa.png" alt="黄色奶蛙捧腹大笑" />
+        </div>
+      </div>
+
+      <div id="headphone-card" class="headphone-card hidden">
+        <div class="headphone-icon">◖♪◗</div>
+        <h2>为了获得更好的游戏体验</h2>
+        <p>建议佩戴耳机，并将设备音量调整至舒适范围。</p>
+        <button id="headphone-enter" class="gold-btn">进入故事</button>
+      </div>
+
+      <div id="dialogue-box" class="dialogue-box hidden">
+        <div class="dialogue-topline">
+          <span id="chapter-label">我</span>
+          <span id="auto-indicator"></span>
+        </div>
+        <div id="speaker-name" class="speaker-name"></div>
+        <div id="dialogue-text" class="dialogue-text"></div>
+        <div class="next-mark">▼</div>
+      </div>
+
+      <div id="game-toolbar" class="game-toolbar hidden" aria-label="游戏功能栏">
+        <button data-tool="history">HISTORY</button>
+        <button data-tool="auto">AUTO</button>
+        <button data-tool="skip">SKIP</button>
+        <button data-tool="save">SAVE</button>
+        <button data-tool="load">LOAD</button>
+        <button data-tool="settings">CONFIG</button>
+        <button data-tool="title">TITLE</button>
+      </div>
+    </section>
+
+    <div id="modal-layer" class="modal-layer hidden" aria-hidden="true">
+      <div id="modal-card" class="modal-card"></div>
+    </div>
+
+    <div id="viewer" class="viewer hidden" aria-hidden="true">
+      <button id="viewer-close" class="viewer-close">×</button>
+      <img id="viewer-image" alt="鉴赏图片" />
+      <div class="viewer-caption"><strong id="viewer-title"></strong><span id="viewer-subtitle"></span></div>
+    </div>
+
+    <div id="impact-cut" class="impact-cut" aria-hidden="true"></div>
+    <div id="fade" class="fade"></div>
+    <div id="toast" class="toast" role="status"></div>
+
+    <audio id="bgm" src="assets/audio/bgm.mp3" loop preload="auto"></audio>
+    <audio id="laugh" src="assets/audio/laugh.mp3" loop preload="auto"></audio>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
