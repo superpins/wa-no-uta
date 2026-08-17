@@ -2,8 +2,6 @@
 
 > **愿你也能记住，她那一天的笑容。**
 
-<p align="center">
-  <img src="assets/promo/heroine-1.png" alt="她" width="44%" />
   &nbsp;&nbsp;
   <img src="assets/promo/heroine-2.png" alt="她的笑容" width="44%" />
 </p>
