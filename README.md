@@ -1,15 +1,11 @@
 # 《蛙之诗》
 
-<p align="center">
-  <img src="assets/bg/prologue.webp" alt="樱花盛开的河岸" width="100%" />
-</p>
-
 > **愿你也能记住，她那一天的笑容。**
 
 <p align="center">
-  <img src="assets/promo/portrait-spring.png" alt="春日里的她" width="42%" />
+  <img src="assets/promo/heroine-1.png" alt="她" width="44%" />
   &nbsp;&nbsp;
-  <img src="assets/promo/portrait-smile.png" alt="微笑的她" width="42%" />
+  <img src="assets/promo/heroine-2.png" alt="她的笑容" width="44%" />
 </p>
 
 春天又一次来到这座小城。
